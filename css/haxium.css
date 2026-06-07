@@ -35,7 +35,7 @@ body { margin: 0; }
   --shadow:    0 18px 44px rgba(60,40,20,0.13);
   --shadow-lg: 0 28px 70px rgba(60,40,20,0.18);
 
-  --wrap: 1140px;
+  --wrap: 1340px;
   --r: 16px;          /* card radius */
   --r-lg: 24px;       /* large panels */
   --r-btn: 12px;      /* buttons */
@@ -57,7 +57,7 @@ h1,h2,h3,h4 { margin: 0; font-family: var(--font-display); font-weight: 700; let
 p { margin: 0; }
 img { max-width: 100%; display: block; }
 
-.wrap { max-width: var(--wrap); margin: 0 auto; padding: 0 28px; }
+.wrap { max-width: var(--wrap); margin: 0 auto; padding: 0 20px; }
 section { position: relative; }
 .alt { background: var(--bg-2); }
 
@@ -111,7 +111,7 @@ body::before{
   backdrop-filter: blur(16px) saturate(1.1);
   border-bottom-color: var(--border);
 }
-.nav-in { max-width: var(--wrap); margin: 0 auto; padding: 16px 28px; display: flex; align-items: center; justify-content: space-between; gap: 20px; }
+.nav-in { max-width: var(--wrap); margin: 0 auto; padding: 16px 20px; display: flex; align-items: center; justify-content: space-between; gap: 20px; }
 .brand { display: inline-flex; align-items: center; gap: 11px; }
 .brand .mark {
   width: 36px; height: 36px; border-radius: 10px; display: grid; place-items: center;
@@ -142,7 +142,7 @@ body::before{
 
 /* ============================ HERO ============================ */
 .hero { padding: 150px 0 70px; overflow: hidden; }
-.hero-grid { display: grid; grid-template-columns: 1.05fr 0.95fr; gap: 56px; align-items: center; }
+.hero-grid { display: grid; grid-template-columns: 1.05fr 0.95fr; gap: 48px; align-items: stretch; }
 .badge {
   display: inline-flex; align-items: center; gap: 9px;
   font-size: 13px; font-weight: 600; color: var(--accent);
@@ -159,13 +159,16 @@ body::before{
 .hero-micro span:first-child { padding-left: 0; }
 .hero-micro span + span::before { display: none; }
 .hero-micro svg { width: 15px; height: 15px; color: var(--green); }
+.hero-micro--stack { flex-direction: column; gap: 8px; }
+.hero-micro--stack span { padding: 0; }
 
 /* hero visual: full-size call card */
-.hero-visual { position: relative; }
+.hero-visual { position: relative; display: flex; }
 .call-card.call-card--full {
-  position: relative; width: 100%;
+  position: relative; width: 100%; flex: 1;
+  display: flex; flex-direction: column; justify-content: center;
   background: var(--ink); border: 1px solid var(--border); border-radius: var(--r-lg);
-  padding: 28px 32px; box-shadow: var(--shadow-lg);
+  padding: 24px 28px; box-shadow: var(--shadow-lg);
 }
 
 /* Caller & AI Avatars */
@@ -213,11 +216,28 @@ body::before{
 .cc-metrics span { font-size: 12px; color: var(--muted); }
 
 /* ============================ MARQUEE / TRUST ============================ */
-.trust { padding: 30px 0; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
-.trust-in { display: flex; align-items: center; gap: 26px; flex-wrap: wrap; justify-content: center; }
+.trust { padding: 0; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); overflow: hidden; }
+.trust-top { text-align: center; padding: 20px 20px 0; }
 .trust-label { font-family: var(--font-mono); font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--faint); }
-.trust-chips { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; }
-.trust-chips span { font-size: 14px; font-weight: 600; color: var(--fg-soft); padding: 7px 15px; border-radius: 9px; background: var(--ink); border: 1px solid var(--border); }
+.marquee { position: relative; width: 100%; overflow: hidden; padding: 18px 0 22px; }
+.marquee::before, .marquee::after {
+  content: ""; position: absolute; top: 0; bottom: 0; width: 80px; z-index: 2; pointer-events: none;
+}
+.marquee::before { left: 0; background: linear-gradient(90deg, var(--bg), transparent); }
+.marquee::after { right: 0; background: linear-gradient(270deg, var(--bg), transparent); }
+.marquee-track {
+  display: flex; gap: 12px; width: max-content;
+  animation: marqueeScroll 40s linear infinite;
+}
+.marquee-track span {
+  flex: none; font-size: 14px; font-weight: 600; color: var(--fg-soft);
+  padding: 7px 16px; border-radius: 9px; background: var(--ink); border: 1px solid var(--border);
+  white-space: nowrap;
+}
+@keyframes marqueeScroll {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
 
 /* ============================ PROBLEM ============================ */
 .prob-head { max-width: 760px; }
