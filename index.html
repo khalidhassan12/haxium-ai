@@ -1,1536 +1,426 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-palette="paper" data-typeface="geometric" data-energy="bold">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Haxium AI — Your AI Receptionist That Never Sleeps</title>
-    <meta name="description" content="Haxium AI answers every call, books appointments, and captures leads 24/7. Stop losing customers to voicemail.">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
-    <style>
-        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
-
-        :root {
-            --bg-primary: #06090f;
-            --bg-secondary: #0c1117;
-            --bg-card: #111820;
-            --bg-card-hover: #161f2a;
-            --accent: #00d4ff;
-            --accent-2: #7b61ff;
-            --accent-3: #00ff88;
-            --text-primary: #f0f4f8;
-            --text-secondary: #8899aa;
-            --text-muted: #556677;
-            --border: #1a2535;
-            --glow: rgba(0, 212, 255, 0.15);
-            --glow-purple: rgba(123, 97, 255, 0.15);
-        }
-
-        html { scroll-behavior: smooth; }
-
-        body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            background: var(--bg-primary);
-            color: var(--text-primary);
-            line-height: 1.6;
-            overflow-x: hidden;
-        }
-
-        /* ===== GRID BACKGROUND ===== */
-        .grid-bg {
-            position: fixed;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background-image:
-                linear-gradient(rgba(0, 212, 255, 0.03) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(0, 212, 255, 0.03) 1px, transparent 1px);
-            background-size: 60px 60px;
-            pointer-events: none;
-            z-index: 0;
-        }
-
-        /* ===== NAVBAR ===== */
-        .navbar {
-            position: fixed;
-            top: 0; left: 0; right: 0;
-            z-index: 1000;
-            padding: 0 2rem;
-            backdrop-filter: blur(20px);
-            background: rgba(6, 9, 15, 0.8);
-            border-bottom: 1px solid var(--border);
-            transition: all 0.3s;
-        }
-        .navbar.scrolled { background: rgba(6, 9, 15, 0.95); }
-        .nav-inner {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            height: 72px;
-        }
-        .nav-logo {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            text-decoration: none;
-        }
-        .logo-icon {
-            width: 36px; height: 36px;
-            background: linear-gradient(135deg, var(--accent), var(--accent-2));
-            border-radius: 10px;
-            display: flex; align-items: center; justify-content: center;
-            font-weight: 900; font-size: 18px; color: var(--bg-primary);
-        }
-        .logo-text {
-            font-size: 1.25rem;
-            font-weight: 700;
-            color: var(--text-primary);
-            letter-spacing: -0.02em;
-        }
-        .logo-text span { color: var(--accent); }
-        .nav-links {
-            display: flex;
-            align-items: center;
-            gap: 2rem;
-            list-style: none;
-        }
-        .nav-links a {
-            color: var(--text-secondary);
-            text-decoration: none;
-            font-size: 0.875rem;
-            font-weight: 500;
-            transition: color 0.2s;
-        }
-        .nav-links a:hover { color: var(--text-primary); }
-        .nav-cta {
-            background: linear-gradient(135deg, var(--accent), #00b8d9);
-            color: var(--bg-primary) !important;
-            padding: 0.55rem 1.25rem;
-            border-radius: 8px;
-            font-weight: 600 !important;
-            transition: transform 0.2s, box-shadow 0.2s !important;
-        }
-        .nav-cta:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 4px 20px rgba(0, 212, 255, 0.3);
-        }
-        .mobile-toggle {
-            display: none;
-            background: none; border: none;
-            color: var(--text-primary); cursor: pointer;
-            font-size: 1.5rem;
-        }
-
-        /* ===== HERO ===== */
-        .hero {
-            position: relative;
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 8rem 2rem 4rem;
-            overflow: hidden;
-        }
-        .hero-glow {
-            position: absolute;
-            width: 600px; height: 600px;
-            border-radius: 50%;
-            filter: blur(120px);
-            opacity: 0.4;
-            pointer-events: none;
-        }
-        .hero-glow-1 {
-            top: -200px; left: -100px;
-            background: radial-gradient(circle, var(--accent), transparent 70%);
-        }
-        .hero-glow-2 {
-            bottom: -200px; right: -100px;
-            background: radial-gradient(circle, var(--accent-2), transparent 70%);
-        }
-        .hero-content {
-            position: relative;
-            z-index: 2;
-            text-align: center;
-            max-width: 900px;
-        }
-        .hero-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            padding: 6px 16px;
-            border-radius: 100px;
-            border: 1px solid var(--border);
-            background: rgba(0, 212, 255, 0.05);
-            font-size: 0.8rem;
-            color: var(--accent);
-            font-weight: 500;
-            margin-bottom: 2rem;
-            animation: fadeInDown 0.6s ease;
-        }
-        .hero-badge .pulse {
-            width: 8px; height: 8px;
-            border-radius: 50%;
-            background: var(--accent-3);
-            animation: pulse 2s infinite;
-        }
-        .hero h1 {
-            font-size: clamp(2.5rem, 6vw, 4.5rem);
-            font-weight: 800;
-            line-height: 1.1;
-            letter-spacing: -0.03em;
-            margin-bottom: 1.5rem;
-            animation: fadeInUp 0.8s ease;
-        }
-        .hero h1 .gradient-text {
-            background: linear-gradient(135deg, var(--accent), var(--accent-2), var(--accent));
-            background-size: 200% auto;
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            animation: shimmer 3s linear infinite;
-        }
-        .hero-sub {
-            font-size: clamp(1rem, 2vw, 1.25rem);
-            color: var(--text-secondary);
-            max-width: 600px;
-            margin: 0 auto 2.5rem;
-            line-height: 1.7;
-            animation: fadeInUp 1s ease;
-        }
-        .hero-ctas {
-            display: flex;
-            gap: 1rem;
-            justify-content: center;
-            flex-wrap: wrap;
-            animation: fadeInUp 1.2s ease;
-        }
-        .btn-primary {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            padding: 0.9rem 2rem;
-            background: linear-gradient(135deg, var(--accent), #00b8d9);
-            color: var(--bg-primary);
-            font-weight: 700;
-            font-size: 1rem;
-            border: none;
-            border-radius: 12px;
-            cursor: pointer;
-            text-decoration: none;
-            transition: all 0.3s;
-        }
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 30px rgba(0, 212, 255, 0.35);
-        }
-        .btn-secondary {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            padding: 0.9rem 2rem;
-            background: transparent;
-            color: var(--text-primary);
-            font-weight: 600;
-            font-size: 1rem;
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            cursor: pointer;
-            text-decoration: none;
-            transition: all 0.3s;
-        }
-        .btn-secondary:hover {
-            border-color: var(--accent);
-            background: rgba(0, 212, 255, 0.05);
-            transform: translateY(-2px);
-        }
-
-        /* Hero Phone Widget */
-        .hero-widget {
-            margin-top: 4rem;
-            animation: fadeInUp 1.4s ease;
-        }
-        .phone-widget {
-            max-width: 420px;
-            margin: 0 auto;
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: 20px;
-            padding: 1.5rem;
-            position: relative;
-            overflow: hidden;
-        }
-        .phone-widget::before {
-            content: '';
-            position: absolute;
-            top: 0; left: 0; right: 0;
-            height: 1px;
-            background: linear-gradient(90deg, transparent, var(--accent), transparent);
-        }
-        .widget-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 1rem;
-        }
-        .widget-status {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 0.8rem;
-            color: var(--accent-3);
-            font-weight: 500;
-        }
-        .widget-status .dot {
-            width: 8px; height: 8px;
-            border-radius: 50%;
-            background: var(--accent-3);
-            animation: pulse 2s infinite;
-        }
-        .widget-time {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.75rem;
-            color: var(--text-muted);
-        }
-        .widget-conversation {
-            display: flex;
-            flex-direction: column;
-            gap: 0.75rem;
-        }
-        .msg {
-            padding: 0.65rem 1rem;
-            border-radius: 12px;
-            font-size: 0.85rem;
-            line-height: 1.5;
-            max-width: 85%;
-            opacity: 0;
-            animation: msgAppear 0.4s ease forwards;
-        }
-        .msg-ai {
-            background: rgba(0, 212, 255, 0.1);
-            border: 1px solid rgba(0, 212, 255, 0.15);
-            color: var(--text-primary);
-            align-self: flex-start;
-        }
-        .msg-caller {
-            background: var(--bg-card-hover);
-            border: 1px solid var(--border);
-            color: var(--text-secondary);
-            align-self: flex-end;
-        }
-        .msg:nth-child(1) { animation-delay: 0.5s; }
-        .msg:nth-child(2) { animation-delay: 1.5s; }
-        .msg:nth-child(3) { animation-delay: 2.5s; }
-        .msg:nth-child(4) { animation-delay: 3.5s; }
-        .widget-metrics {
-            display: flex;
-            gap: 1rem;
-            margin-top: 1rem;
-            padding-top: 1rem;
-            border-top: 1px solid var(--border);
-        }
-        .widget-metric {
-            flex: 1;
-            text-align: center;
-        }
-        .widget-metric-value {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 1.1rem;
-            font-weight: 700;
-            color: var(--accent);
-        }
-        .widget-metric-label {
-            font-size: 0.7rem;
-            color: var(--text-muted);
-            margin-top: 2px;
-        }
-
-        /* ===== PAIN SECTION ===== */
-        .pain {
-            position: relative;
-            padding: 6rem 2rem;
-            z-index: 1;
-        }
-        .section-inner {
-            max-width: 1100px;
-            margin: 0 auto;
-        }
-        .pain-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 3rem;
-            align-items: center;
-        }
-        .pain-content h2 {
-            font-size: clamp(1.75rem, 3.5vw, 2.75rem);
-            font-weight: 800;
-            letter-spacing: -0.02em;
-            line-height: 1.15;
-            margin-bottom: 1.25rem;
-        }
-        .pain-content p {
-            color: var(--text-secondary);
-            font-size: 1.05rem;
-            line-height: 1.7;
-            margin-bottom: 1rem;
-        }
-        .pain-stats {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 1rem;
-        }
-        .pain-stat {
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: 16px;
-            padding: 1.5rem;
-            text-align: center;
-            position: relative;
-            overflow: hidden;
-            transition: all 0.3s;
-        }
-        .pain-stat:hover {
-            border-color: rgba(0, 212, 255, 0.3);
-            transform: translateY(-3px);
-        }
-        .pain-stat::before {
-            content: '';
-            position: absolute;
-            top: 0; left: 0; right: 0;
-            height: 2px;
-            background: linear-gradient(90deg, transparent, #ff4444, transparent);
-        }
-        .pain-stat .number {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 2rem;
-            font-weight: 700;
-            color: #ff6b6b;
-        }
-        .pain-stat .label {
-            font-size: 0.8rem;
-            color: var(--text-muted);
-            margin-top: 0.25rem;
-        }
-
-        /* ===== HOW IT WORKS ===== */
-        .how-it-works {
-            position: relative;
-            padding: 6rem 2rem;
-            z-index: 1;
-        }
-        .section-label {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 0.8rem;
-            font-weight: 600;
-            color: var(--accent);
-            text-transform: uppercase;
-            letter-spacing: 0.1em;
-            margin-bottom: 1rem;
-        }
-        .section-title {
-            font-size: clamp(1.75rem, 3.5vw, 2.75rem);
-            font-weight: 800;
-            letter-spacing: -0.02em;
-            line-height: 1.15;
-            margin-bottom: 1rem;
-        }
-        .section-desc {
-            color: var(--text-secondary);
-            font-size: 1.05rem;
-            max-width: 600px;
-            margin-bottom: 3rem;
-        }
-        .steps {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 1.5rem;
-        }
-        .step {
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: 20px;
-            padding: 2rem;
-            position: relative;
-            transition: all 0.3s;
-        }
-        .step:hover {
-            border-color: rgba(0, 212, 255, 0.2);
-            transform: translateY(-4px);
-            box-shadow: 0 8px 40px rgba(0, 0, 0, 0.3);
-        }
-        .step-number {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.75rem;
-            font-weight: 700;
-            color: var(--accent);
-            background: rgba(0, 212, 255, 0.1);
-            border: 1px solid rgba(0, 212, 255, 0.2);
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            width: 32px; height: 32px;
-            border-radius: 8px;
-            margin-bottom: 1.25rem;
-        }
-        .step h3 {
-            font-size: 1.15rem;
-            font-weight: 700;
-            margin-bottom: 0.75rem;
-        }
-        .step p {
-            color: var(--text-secondary);
-            font-size: 0.9rem;
-            line-height: 1.6;
-        }
-        .step-time {
-            display: inline-block;
-            margin-top: 1rem;
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.75rem;
-            color: var(--accent-3);
-            background: rgba(0, 255, 136, 0.08);
-            border: 1px solid rgba(0, 255, 136, 0.15);
-            padding: 4px 10px;
-            border-radius: 6px;
-        }
-
-        /* ===== FEATURES ===== */
-        .features {
-            position: relative;
-            padding: 6rem 2rem;
-            z-index: 1;
-        }
-        .features-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 1.25rem;
-        }
-        .feature-card {
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: 16px;
-            padding: 1.75rem;
-            transition: all 0.3s;
-            position: relative;
-            overflow: hidden;
-        }
-        .feature-card:hover {
-            border-color: rgba(0, 212, 255, 0.2);
-            transform: translateY(-3px);
-        }
-        .feature-card::before {
-            content: '';
-            position: absolute;
-            top: 0; left: 0; right: 0;
-            height: 1px;
-            background: linear-gradient(90deg, transparent, var(--accent), transparent);
-            opacity: 0;
-            transition: opacity 0.3s;
-        }
-        .feature-card:hover::before { opacity: 1; }
-        .feature-icon {
-            width: 44px; height: 44px;
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.25rem;
-            margin-bottom: 1rem;
-        }
-        .feature-icon.blue { background: rgba(0, 212, 255, 0.1); }
-        .feature-icon.purple { background: rgba(123, 97, 255, 0.1); }
-        .feature-icon.green { background: rgba(0, 255, 136, 0.1); }
-        .feature-card h3 {
-            font-size: 1.05rem;
-            font-weight: 700;
-            margin-bottom: 0.5rem;
-        }
-        .feature-card p {
-            color: var(--text-secondary);
-            font-size: 0.85rem;
-            line-height: 1.6;
-        }
-
-        /* ===== METRICS BENTO ===== */
-        .metrics {
-            position: relative;
-            padding: 6rem 2rem;
-            z-index: 1;
-        }
-        .bento-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            grid-template-rows: auto auto;
-            gap: 1.25rem;
-        }
-        .bento-card {
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: 20px;
-            padding: 2rem;
-            position: relative;
-            overflow: hidden;
-            transition: all 0.3s;
-        }
-        .bento-card:hover {
-            border-color: rgba(0, 212, 255, 0.2);
-        }
-        .bento-card.span-2 { grid-column: span 2; }
-        .bento-card .bento-label {
-            font-size: 0.75rem;
-            color: var(--text-muted);
-            text-transform: uppercase;
-            letter-spacing: 0.08em;
-            margin-bottom: 0.75rem;
-        }
-        .bento-card .bento-value {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 2.5rem;
-            font-weight: 700;
-            color: var(--accent);
-            line-height: 1;
-        }
-        .bento-card .bento-value.purple { color: var(--accent-2); }
-        .bento-card .bento-value.green { color: var(--accent-3); }
-        .bento-card .bento-sub {
-            font-size: 0.85rem;
-            color: var(--text-secondary);
-            margin-top: 0.5rem;
-        }
-        .bento-card .bento-compare {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            margin-top: 1.25rem;
-            font-size: 0.85rem;
-        }
-        .bento-compare .old {
-            color: var(--text-muted);
-            text-decoration: line-through;
-        }
-        .bento-compare .arrow {
-            color: var(--text-muted);
-        }
-        .bento-compare .new {
-            color: var(--accent);
-            font-weight: 600;
-        }
-        .mini-chart {
-            display: flex;
-            align-items: flex-end;
-            gap: 4px;
-            height: 60px;
-            margin-top: 1rem;
-        }
-        .mini-bar {
-            flex: 1;
-            background: rgba(0, 212, 255, 0.15);
-            border-radius: 3px 3px 0 0;
-            transition: height 1s ease;
-        }
-        .mini-bar.highlight {
-            background: linear-gradient(to top, var(--accent), rgba(0, 212, 255, 0.5));
-        }
-
-        /* ===== TESTIMONIALS ===== */
-        .testimonials {
-            position: relative;
-            padding: 6rem 2rem;
-            z-index: 1;
-        }
-        .testimonial-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 1.5rem;
-        }
-        .testimonial-card {
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: 20px;
-            padding: 2rem;
-            position: relative;
-        }
-        .testimonial-card .quote-mark {
-            font-size: 3rem;
-            line-height: 1;
-            color: var(--accent);
-            opacity: 0.3;
-            font-family: Georgia, serif;
-            margin-bottom: 0.5rem;
-        }
-        .testimonial-card .quote-text {
-            font-size: 1.05rem;
-            line-height: 1.7;
-            color: var(--text-primary);
-            margin-bottom: 1.25rem;
-            font-weight: 500;
-        }
-        .testimonial-author {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-        }
-        .testimonial-avatar {
-            width: 44px; height: 44px;
-            border-radius: 12px;
-            background: linear-gradient(135deg, var(--accent), var(--accent-2));
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 700;
-            font-size: 0.9rem;
-            color: var(--bg-primary);
-        }
-        .testimonial-name {
-            font-weight: 600;
-            font-size: 0.9rem;
-        }
-        .testimonial-role {
-            font-size: 0.8rem;
-            color: var(--text-muted);
-        }
-        .testimonial-card .stars {
-            color: #fbbf24;
-            font-size: 0.85rem;
-            margin-bottom: 0.75rem;
-            letter-spacing: 2px;
-        }
-
-        /* ===== PRICING ===== */
-        .pricing {
-            position: relative;
-            padding: 6rem 2rem;
-            z-index: 1;
-        }
-        .pricing-cards {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 1.5rem;
-            max-width: 800px;
-            margin: 0 auto;
-        }
-        .pricing-card {
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: 20px;
-            padding: 2.5rem;
-            text-align: center;
-            position: relative;
-            transition: all 0.3s;
-        }
-        .pricing-card.featured {
-            border-color: var(--accent);
-            box-shadow: 0 0 60px rgba(0, 212, 255, 0.1);
-        }
-        .pricing-card.featured::before {
-            content: 'Most Popular';
-            position: absolute;
-            top: -12px; left: 50%;
-            transform: translateX(-50%);
-            background: linear-gradient(135deg, var(--accent), #00b8d9);
-            color: var(--bg-primary);
-            font-size: 0.7rem;
-            font-weight: 700;
-            padding: 4px 14px;
-            border-radius: 100px;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-        }
-        .pricing-card h3 {
-            font-size: 1.25rem;
-            font-weight: 700;
-            margin-bottom: 0.5rem;
-        }
-        .pricing-card .price {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 2.5rem;
-            font-weight: 700;
-            color: var(--accent);
-            margin: 1rem 0;
-        }
-        .pricing-card .price span {
-            font-size: 1rem;
-            color: var(--text-muted);
-            font-weight: 400;
-        }
-        .pricing-card .price-sub {
-            font-size: 0.85rem;
-            color: var(--text-secondary);
-            margin-bottom: 1.5rem;
-        }
-        .pricing-features {
-            list-style: none;
-            text-align: left;
-            margin-bottom: 2rem;
-        }
-        .pricing-features li {
-            padding: 0.5rem 0;
-            font-size: 0.9rem;
-            color: var(--text-secondary);
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-        .pricing-features li::before {
-            content: '~';
-            color: var(--accent);
-            font-weight: 700;
-        }
-
-        /* ===== FAQ ===== */
-        .faq {
-            position: relative;
-            padding: 6rem 2rem;
-            z-index: 1;
-        }
-        .faq-list {
-            max-width: 700px;
-            margin: 0 auto;
-        }
-        .faq-item {
-            border-bottom: 1px solid var(--border);
-        }
-        .faq-question {
-            width: 100%;
-            background: none;
-            border: none;
-            color: var(--text-primary);
-            font-size: 1rem;
-            font-weight: 600;
-            text-align: left;
-            padding: 1.25rem 0;
-            cursor: pointer;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-family: inherit;
-        }
-        .faq-question .icon {
-            font-size: 1.25rem;
-            color: var(--accent);
-            transition: transform 0.3s;
-        }
-        .faq-item.open .faq-question .icon {
-            transform: rotate(45deg);
-        }
-        .faq-answer {
-            max-height: 0;
-            overflow: hidden;
-            transition: max-height 0.3s ease;
-        }
-        .faq-item.open .faq-answer {
-            max-height: 200px;
-        }
-        .faq-answer p {
-            padding-bottom: 1.25rem;
-            color: var(--text-secondary);
-            font-size: 0.9rem;
-            line-height: 1.7;
-        }
-
-        /* ===== FINAL CTA ===== */
-        .final-cta {
-            position: relative;
-            padding: 6rem 2rem;
-            text-align: center;
-            z-index: 1;
-        }
-        .cta-box {
-            max-width: 800px;
-            margin: 0 auto;
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: 24px;
-            padding: 4rem 3rem;
-            position: relative;
-            overflow: hidden;
-        }
-        .cta-box::before {
-            content: '';
-            position: absolute;
-            top: 0; left: 0; right: 0;
-            height: 2px;
-            background: linear-gradient(90deg, var(--accent), var(--accent-2), var(--accent));
-        }
-        .cta-glow {
-            position: absolute;
-            width: 400px; height: 400px;
-            border-radius: 50%;
-            background: radial-gradient(circle, rgba(0, 212, 255, 0.08), transparent 70%);
-            top: -200px; left: 50%;
-            transform: translateX(-50%);
-            pointer-events: none;
-        }
-        .cta-box h2 {
-            font-size: clamp(1.75rem, 3.5vw, 2.5rem);
-            font-weight: 800;
-            letter-spacing: -0.02em;
-            margin-bottom: 1rem;
-            position: relative;
-        }
-        .cta-box p {
-            color: var(--text-secondary);
-            font-size: 1.05rem;
-            margin-bottom: 2rem;
-            max-width: 500px;
-            margin-left: auto;
-            margin-right: auto;
-            position: relative;
-        }
-        .cta-box .hero-ctas { position: relative; }
-
-        /* ===== TICKER ===== */
-        .ticker {
-            padding: 1.5rem 0;
-            overflow: hidden;
-            border-top: 1px solid var(--border);
-            border-bottom: 1px solid var(--border);
-            position: relative;
-            z-index: 1;
-        }
-        .ticker-track {
-            display: flex;
-            gap: 2rem;
-            animation: ticker 30s linear infinite;
-            width: max-content;
-        }
-        .ticker-item {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.8rem;
-            color: var(--text-muted);
-            white-space: nowrap;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-        .ticker-item .sep {
-            color: var(--accent);
-            opacity: 0.4;
-        }
-
-        /* ===== FOOTER ===== */
-        .footer {
-            position: relative;
-            z-index: 1;
-            padding: 3rem 2rem;
-            border-top: 1px solid var(--border);
-        }
-        .footer-inner {
-            max-width: 1100px;
-            margin: 0 auto;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .footer-left {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        .footer-copy {
-            font-size: 0.8rem;
-            color: var(--text-muted);
-        }
-        .footer-links {
-            display: flex;
-            gap: 1.5rem;
-            list-style: none;
-        }
-        .footer-links a {
-            color: var(--text-muted);
-            font-size: 0.8rem;
-            text-decoration: none;
-            transition: color 0.2s;
-        }
-        .footer-links a:hover { color: var(--text-primary); }
-
-        /* ===== ANIMATIONS ===== */
-        @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(30px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        @keyframes fadeInDown {
-            from { opacity: 0; transform: translateY(-20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        @keyframes pulse {
-            0%, 100% { opacity: 1; transform: scale(1); }
-            50% { opacity: 0.5; transform: scale(1.5); }
-        }
-        @keyframes shimmer {
-            0% { background-position: 0% center; }
-            100% { background-position: 200% center; }
-        }
-        @keyframes msgAppear {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        @keyframes ticker {
-            from { transform: translateX(0); }
-            to { transform: translateX(-50%); }
-        }
-
-        /* Scroll reveal */
-        .reveal {
-            opacity: 0;
-            transform: translateY(40px);
-            transition: opacity 0.8s ease, transform 0.8s ease;
-        }
-        .reveal.visible {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        /* ===== RESPONSIVE ===== */
-        @media (max-width: 1024px) {
-            .bento-grid { grid-template-columns: repeat(2, 1fr); }
-            .bento-card.span-2 { grid-column: span 1; }
-        }
-        @media (max-width: 768px) {
-            .nav-links { display: none; }
-            .mobile-toggle { display: block; }
-            .pain-grid { grid-template-columns: 1fr; }
-            .steps { grid-template-columns: 1fr; }
-            .features-grid { grid-template-columns: 1fr; }
-            .bento-grid { grid-template-columns: 1fr; }
-            .testimonial-grid { grid-template-columns: 1fr; }
-            .pricing-cards { grid-template-columns: 1fr; }
-            .hero { padding: 7rem 1.25rem 3rem; }
-            .footer-inner { flex-direction: column; gap: 1rem; text-align: center; }
-            .cta-box { padding: 3rem 1.5rem; }
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Haxium AI — The Front Desk That Never Closes</title>
+<meta name="description" content="An AI voice agent that answers every call, books appointments, and captures leads — 24/7. Sounds human, live in under 2 weeks. No setup fees.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,700;12..96,800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&family=Instrument+Sans:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/haxium.css">
+<!-- BOOKING: every "Book a free call" button uses href="#book". When you have your Cal.com/Calendly
+     link, swap those hrefs for the real URL (I can do this in one pass). -->
 </head>
 <body>
-    <div class="grid-bg"></div>
 
-    <!-- NAVBAR -->
-    <nav class="navbar" id="navbar">
-        <div class="nav-inner">
-            <a href="#" class="nav-logo">
-                <div class="logo-icon">H</div>
-                <div class="logo-text">Haxium<span>AI</span></div>
-            </a>
-            <ul class="nav-links">
-                <li><a href="#how-it-works">How It Works</a></li>
-                <li><a href="#features">Features</a></li>
-                <li><a href="#pricing">Pricing</a></li>
-                <li><a href="#faq">FAQ</a></li>
-                <li><a href="tel:+16467590757" class="nav-cta">Book a Free Call</a></li>
-            </ul>
-            <button class="mobile-toggle" onclick="document.querySelector('.nav-links').classList.toggle('show')">&#9776;</button>
-        </div>
+<!-- ============================ NAV ============================ -->
+<header class="nav">
+  <div class="nav-in">
+    <a href="#top" class="brand" aria-label="Haxium AI home">
+      <span class="mark"><svg viewBox="0 0 24 24" fill="currentColor"><rect x="3" y="9" width="2.4" height="6" rx="1.2"/><rect x="8" y="5" width="2.4" height="14" rx="1.2"/><rect x="13" y="7" width="2.4" height="10" rx="1.2"/><rect x="18" y="10.5" width="2.4" height="3" rx="1.2"/></svg></span>
+      <b>Haxium<em>AI</em></b>
+    </a>
+    <nav class="nav-links">
+      <a href="#problem">The problem</a>
+      <a href="#how">How it works</a>
+      <a href="#features">Features</a>
+      <a href="#results">Results</a>
+      <a href="#faq">FAQ</a>
     </nav>
-
-    <!-- HERO -->
-    <section class="hero">
-        <div class="hero-glow hero-glow-1"></div>
-        <div class="hero-glow hero-glow-2"></div>
-        <div class="hero-content">
-            <div class="hero-badge">
-                <span class="pulse"></span>
-                AI Receptionist &mdash; Live 24/7
-            </div>
-            <h1>Stop losing customers<br>to <span class="gradient-text">voicemail.</span></h1>
-            <p class="hero-sub">
-                Your AI receptionist answers every call, books appointments, and captures leads around the clock. It sounds human. It works instantly. You never miss revenue again.
-            </p>
-            <div class="hero-ctas">
-                <a href="tel:+16467590757" class="btn-primary">
-                    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
-                    Call Our AI Demo
-                </a>
-                <a href="#book" class="btn-secondary">
-                    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-                    Book Free Consultation
-                </a>
-            </div>
-
-            <!-- Live Widget -->
-            <div class="hero-widget">
-                <div class="phone-widget">
-                    <div class="widget-header">
-                        <div class="widget-status"><span class="dot"></span> AI Agent Active</div>
-                        <div class="widget-time">Today, 2:47 AM</div>
-                    </div>
-                    <div class="widget-conversation">
-                        <div class="msg msg-ai">Hi, thanks for calling! I'm the AI assistant for Dr. Smith's office. How can I help you today?</div>
-                        <div class="msg msg-caller">I need to schedule a cleaning appointment for next week.</div>
-                        <div class="msg msg-ai">I'd be happy to help! I have openings on Tuesday at 10 AM and Thursday at 2 PM. Which works better?</div>
-                        <div class="msg msg-caller">Thursday at 2 works perfectly.</div>
-                    </div>
-                    <div class="widget-metrics">
-                        <div class="widget-metric">
-                            <div class="widget-metric-value">0.4s</div>
-                            <div class="widget-metric-label">Pickup Time</div>
-                        </div>
-                        <div class="widget-metric">
-                            <div class="widget-metric-value">100%</div>
-                            <div class="widget-metric-label">Calls Answered</div>
-                        </div>
-                        <div class="widget-metric">
-                            <div class="widget-metric-value">24/7</div>
-                            <div class="widget-metric-label">Availability</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- TICKER -->
-    <div class="ticker">
-        <div class="ticker-track">
-            <span class="ticker-item">Appointment Booking <span class="sep">/</span></span>
-            <span class="ticker-item">Lead Capture <span class="sep">/</span></span>
-            <span class="ticker-item">Call Routing <span class="sep">/</span></span>
-            <span class="ticker-item">FAQ Handling <span class="sep">/</span></span>
-            <span class="ticker-item">After-Hours Coverage <span class="sep">/</span></span>
-            <span class="ticker-item">Bilingual Support <span class="sep">/</span></span>
-            <span class="ticker-item">CRM Integration <span class="sep">/</span></span>
-            <span class="ticker-item">Warm Transfers <span class="sep">/</span></span>
-            <span class="ticker-item">Voicemail Transcription <span class="sep">/</span></span>
-            <span class="ticker-item">SMS Follow-ups <span class="sep">/</span></span>
-            <span class="ticker-item">Custom Scripts <span class="sep">/</span></span>
-            <span class="ticker-item">Real-time Dashboard <span class="sep">/</span></span>
-            <!-- duplicate for seamless loop -->
-            <span class="ticker-item">Appointment Booking <span class="sep">/</span></span>
-            <span class="ticker-item">Lead Capture <span class="sep">/</span></span>
-            <span class="ticker-item">Call Routing <span class="sep">/</span></span>
-            <span class="ticker-item">FAQ Handling <span class="sep">/</span></span>
-            <span class="ticker-item">After-Hours Coverage <span class="sep">/</span></span>
-            <span class="ticker-item">Bilingual Support <span class="sep">/</span></span>
-            <span class="ticker-item">CRM Integration <span class="sep">/</span></span>
-            <span class="ticker-item">Warm Transfers <span class="sep">/</span></span>
-            <span class="ticker-item">Voicemail Transcription <span class="sep">/</span></span>
-            <span class="ticker-item">SMS Follow-ups <span class="sep">/</span></span>
-            <span class="ticker-item">Custom Scripts <span class="sep">/</span></span>
-            <span class="ticker-item">Real-time Dashboard <span class="sep">/</span></span>
-        </div>
+    <div class="nav-actions">
+      <a class="nav-phone" href="tel:+16467590757"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.8 19.8 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.12 4.18 2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/></svg>(646) 759-0757</a>
+      <a class="nav-cta" href="#book">Book a free call</a>
+      <button class="nav-burger" aria-label="Menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="7" x2="21" y2="7"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="17" x2="21" y2="17"/></svg></button>
     </div>
+  </div>
+</header>
+<div class="m-menu">
+  <a href="#problem">The problem</a>
+  <a href="#how">How it works</a>
+  <a href="#features">Features</a>
+  <a href="#results">Results</a>
+  <a href="#faq">FAQ</a>
+  <a class="btn btn-primary btn-block" href="tel:+16467590757">Call (646) 759-0757</a>
+  <a class="btn btn-ghost btn-block" href="#book">Book a free call</a>
+</div>
 
-    <!-- PAIN SECTION -->
-    <section class="pain" id="problem">
-        <div class="section-inner">
-            <div class="pain-grid">
-                <div class="pain-content reveal">
-                    <div class="section-label">// The Problem</div>
-                    <h2>Every missed call is a <span style="color: #ff6b6b">customer lost</span> to your competitor.</h2>
-                    <p>62% of calls to small businesses go unanswered. That's not just an inconvenience &mdash; it's revenue walking out the door and straight to the business that picks up first.</p>
-                    <p>Hiring a full-time receptionist costs $35,000+/year. And they still can't answer calls at 2 AM, on weekends, or during lunch.</p>
-                </div>
-                <div class="pain-stats reveal">
-                    <div class="pain-stat">
-                        <div class="number">62%</div>
-                        <div class="label">of small business calls go unanswered</div>
-                    </div>
-                    <div class="pain-stat">
-                        <div class="number">$1.6K</div>
-                        <div class="label">lost per missed call (avg lifetime value)</div>
-                    </div>
-                    <div class="pain-stat">
-                        <div class="number">85%</div>
-                        <div class="label">of callers won't call back if unanswered</div>
-                    </div>
-                    <div class="pain-stat">
-                        <div class="number">$35K+</div>
-                        <div class="label">annual cost of a human receptionist</div>
-                    </div>
-                </div>
-            </div>
+<span id="top"></span>
+
+<!-- ============================ HERO ============================ -->
+<section class="hero">
+  <div class="wrap">
+    <div class="hero-grid">
+      <div class="hero-copy">
+        <span class="badge"><span class="dot"></span> AI receptionist · answering live</span>
+        <h1>The front desk that <span class="hl">never closes.</span></h1>
+        <p class="lede">Our AI Voice Agent sounds human-like, answers every call, books appointments, answers FAQs, and captures leads literally 24/7.</p>
+        <div class="hero-ctas">
+          <a class="btn btn-primary" href="tel:+16467590757"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.8 19.8 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.12 4.18 2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/></svg>Call the live demo</a>
+          <a class="btn btn-ghost" href="#book"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>Book a free consultation</a>
         </div>
-    </section>
-
-    <!-- HOW IT WORKS -->
-    <section class="how-it-works" id="how-it-works">
-        <div class="section-inner">
-            <div class="section-label reveal">// How It Works</div>
-            <h2 class="section-title reveal">Live in under a week. <span style="color: var(--accent)">Seriously.</span></h2>
-            <p class="section-desc reveal">No complex setup. No IT team needed. We handle everything so you can focus on running your business.</p>
-            <div class="steps">
-                <div class="step reveal">
-                    <div class="step-number">01</div>
-                    <h3>Tell Us About Your Business</h3>
-                    <p>We learn your services, hours, booking rules, and common caller questions. We custom-build your AI agent from scratch.</p>
-                    <div class="step-time">Day 1</div>
-                </div>
-                <div class="step reveal">
-                    <div class="step-number">02</div>
-                    <h3>We Build & Train Your Agent</h3>
-                    <p>Your AI receptionist gets a natural-sounding voice, your exact business knowledge, and integration with your calendar and CRM.</p>
-                    <div class="step-time">Days 2-4</div>
-                </div>
-                <div class="step reveal">
-                    <div class="step-number">03</div>
-                    <h3>Go Live & Never Miss a Call</h3>
-                    <p>Flip the switch. Your AI answers calls 24/7, books appointments, captures leads, and sends you real-time notifications.</p>
-                    <div class="step-time">Day 5</div>
-                </div>
-            </div>
+        <div class="hero-micro">
+          <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><polyline points="20 6 9 17 4 12"/></svg>Live in under 2 weeks</span>
+          <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><polyline points="20 6 9 17 4 12"/></svg>Books directly into your calendar</span>
+          <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><polyline points="20 6 9 17 4 12"/></svg>Add extra 10K$ to your revenue </span>
         </div>
-    </section>
-
-    <!-- FEATURES -->
-    <section class="features" id="features">
-        <div class="section-inner">
-            <div class="section-label reveal">// Capabilities</div>
-            <h2 class="section-title reveal">Built to handle <span style="color: var(--accent)">every call.</span></h2>
-            <p class="section-desc reveal">Not a chatbot. Not a phone tree. A voice AI that holds real conversations and gets things done.</p>
-            <div class="features-grid">
-                <div class="feature-card reveal">
-                    <div class="feature-icon blue">
-                        <svg width="22" height="22" fill="none" stroke="var(--accent)" stroke-width="2" viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
-                    </div>
-                    <h3>Instant Call Answering</h3>
-                    <p>Picks up in under 1 second. No hold music, no "press 1 for..." menus. Just a friendly, natural voice ready to help.</p>
-                </div>
-                <div class="feature-card reveal">
-                    <div class="feature-icon purple">
-                        <svg width="22" height="22" fill="none" stroke="var(--accent-2)" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-                    </div>
-                    <h3>Smart Appointment Booking</h3>
-                    <p>Integrates with your calendar in real-time. Books, reschedules, and confirms appointments without human intervention.</p>
-                </div>
-                <div class="feature-card reveal">
-                    <div class="feature-icon green">
-                        <svg width="22" height="22" fill="none" stroke="var(--accent-3)" stroke-width="2" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-                    </div>
-                    <h3>Lead Qualification</h3>
-                    <p>Asks the right questions, captures caller info, and scores leads. Hot leads get flagged instantly to your phone.</p>
-                </div>
-                <div class="feature-card reveal">
-                    <div class="feature-icon blue">
-                        <svg width="22" height="22" fill="none" stroke="var(--accent)" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-                    </div>
-                    <h3>Natural Conversations</h3>
-                    <p>Powered by advanced AI voice technology. Handles interruptions, follow-ups, and complex questions just like a real person.</p>
-                </div>
-                <div class="feature-card reveal">
-                    <div class="feature-icon purple">
-                        <svg width="22" height="22" fill="none" stroke="var(--accent-2)" stroke-width="2" viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
-                    </div>
-                    <h3>Live Call Transfers</h3>
-                    <p>For urgent or high-value calls, the AI seamlessly transfers to you or your team with full context &mdash; no cold handoff.</p>
-                </div>
-                <div class="feature-card reveal">
-                    <div class="feature-icon green">
-                        <svg width="22" height="22" fill="none" stroke="var(--accent-3)" stroke-width="2" viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
-                    </div>
-                    <h3>Real-time Dashboard</h3>
-                    <p>See every call, transcript, booking, and lead in one place. Get SMS/email notifications the moment something happens.</p>
-                </div>
-            </div>
+      </div>
+      <div class="hero-visual">
+        <image-slot class="bot-slot" id="bot-hero" shape="rounded" radius="24" placeholder="AI agent illustration — friendly bot on a call, waving to a customer"></image-slot>
+        <div class="call-card">
+          <div class="cc-head">
+            <span class="cc-live"><i></i> Live call</span>
+            <span class="cc-timer">00:14</span>
+          </div>
+          <div class="wave"></div>
+          <div class="cc-line"><span class="who c">Caller</span>Are you open Saturday?</div>
+          <div class="cc-line"><span class="who a">Agent</span>Yes — 9 to 4. Book you in?</div>
+          <div class="cc-metrics">
+            <div><b>0.4s</b><span>Pickup</span></div>
+            <div><b>100%</b><span>Answered</span></div>
+            <div><b>24/7</b><span>On call</span></div>
+          </div>
         </div>
-    </section>
+      </div>
+    </div>
+  </div>
+</section>
 
-    <!-- METRICS BENTO -->
-    <section class="metrics" id="results">
-        <div class="section-inner">
-            <div class="section-label reveal">// Results That Speak</div>
-            <h2 class="section-title reveal">What happens when you <span style="color: var(--accent)">stop missing calls.</span></h2>
-            <p class="section-desc reveal">Average performance across our clients in the first 90 days.</p>
-            <div class="bento-grid">
-                <div class="bento-card span-2 reveal">
-                    <div class="bento-label">Calls Answered</div>
-                    <div class="bento-value">100%</div>
-                    <div class="bento-sub">Every single call. 24 hours a day, 365 days a year.</div>
-                    <div class="bento-compare">
-                        <span class="old">Industry avg: 38%</span>
-                        <span class="arrow">&rarr;</span>
-                        <span class="new">With Haxium: 100%</span>
-                    </div>
-                </div>
-                <div class="bento-card reveal">
-                    <div class="bento-label">Avg Pickup Speed</div>
-                    <div class="bento-value purple">&lt;1s</div>
-                    <div class="bento-sub">Sub-second response time</div>
-                </div>
-                <div class="bento-card reveal">
-                    <div class="bento-label">Cost Savings</div>
-                    <div class="bento-value green">73%</div>
-                    <div class="bento-sub">vs. hiring a receptionist</div>
-                </div>
-                <div class="bento-card reveal">
-                    <div class="bento-label">Appointments Booked</div>
-                    <div class="bento-value">2.4x</div>
-                    <div class="bento-sub">More bookings in 90 days</div>
-                    <div class="mini-chart">
-                        <div class="mini-bar" style="height:30%"></div>
-                        <div class="mini-bar" style="height:35%"></div>
-                        <div class="mini-bar" style="height:32%"></div>
-                        <div class="mini-bar" style="height:45%"></div>
-                        <div class="mini-bar" style="height:50%"></div>
-                        <div class="mini-bar" style="height:55%"></div>
-                        <div class="mini-bar" style="height:65%"></div>
-                        <div class="mini-bar" style="height:70%"></div>
-                        <div class="mini-bar" style="height:78%"></div>
-                        <div class="mini-bar highlight" style="height:90%"></div>
-                        <div class="mini-bar highlight" style="height:95%"></div>
-                        <div class="mini-bar highlight" style="height:100%"></div>
-                    </div>
-                </div>
-                <div class="bento-card reveal">
-                    <div class="bento-label">Lead Capture Rate</div>
-                    <div class="bento-value purple">94%</div>
-                    <div class="bento-sub">Of all inbound callers captured</div>
-                </div>
-                <div class="bento-card span-2 reveal">
-                    <div class="bento-label">Revenue Recovered</div>
-                    <div class="bento-value green">$14K+</div>
-                    <div class="bento-sub">Average monthly revenue recovered from previously missed calls</div>
-                    <div class="bento-compare">
-                        <span class="old">Before: ~47 missed calls/month</span>
-                        <span class="arrow">&rarr;</span>
-                        <span class="new">After: 0 missed calls</span>
-                    </div>
-                </div>
-            </div>
+<!-- ============================ TRUST ============================ -->
+<section class="trust">
+  <div class="wrap trust-in">
+    <span class="trust-label">Built for the businesses that live on the phone</span>
+    <div class="trust-chips">
+      <span>Salons</span><span>Auto repair</span><span>HVAC &amp; home services</span>
+      <span>MedSpas</span><span>Vets</span><span>Immigration offices</span>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ PROBLEM ============================ -->
+<section class="section-pad" id="problem">
+  <div class="wrap">
+    <div class="prob-head reveal">
+      <span class="eyebrow">The cost of silence</span>
+      <h2 class="h2">Every missed call is revenue walking to your <span class="hl">competitor.</span></h2>
+      <p class="lede">You're great at the work. But you can't pick up while you're with a customer, under a hood, or asleep, and customers don't wait around.</p>
+    </div>
+    <div class="stat-grid">
+      <div class="stat reveal">
+        <div class="num">62%</div>
+        <div class="desc">of calls to small businesses go unanswered, only about a third reach a live person.</div>
+        <div class="src">— 411 Locals study, 2024</div>
+      </div>
+      <div class="stat reveal">
+        <div class="num">85%</div>
+        <div class="desc">of those callers never call back. They dial the next business on the list instead.</div>
+        <div class="src">— Forbes</div>
+      </div>
+      <div class="stat reveal">
+        <div class="num">78%</div>
+        <div class="desc">of customers buy from whoever responds first. Speed wins the sale every time, not price.</div>
+        <div class="src">— HubSpot</div>
+      </div>
+    </div>
+    <p class="prob-foot reveal">A full-time receptionist costs $35,000+ a year, clocks out at 5, takes lunch breaks, and can't cover weekends. AI Voice Agent can answer every call 24/7 without getting tired, without taking a day off, and for a fraction of the cost.</p>
+  </div>
+</section>
+
+<!-- ============================ CALCULATOR ============================ -->
+<section class="section-pad alt" id="calculator">
+  <div class="wrap">
+    <div class="reveal">
+      <span class="eyebrow">KNOW YOUR NUMBERS</span>
+      <h2 class="h2">How much are missed calls costing <span class="hl">you?</span></h2>
+      <p class="lede">Drag the sliders to your real numbers and see for yourself how much you are leaving at the table every month based on published estimated industry averages from 411 Locals &amp; Forbes data</p>
+    </div>
+    <div class="calc" id="calc">
+      <div class="calc-controls reveal">
+        <div class="ctrl">
+          <div class="ctrl-top"><label for="c-calls">Calls you get per day</label><span class="ctrl-val" id="v-calls">12/day</span></div>
+          <input type="range" id="c-calls" min="5" max="150" value="12" step="1">
+          <div class="ctrl-scale"><span>5</span><span>150</span></div>
         </div>
-    </section>
-
-    <!-- TESTIMONIALS -->
-    <section class="testimonials" id="testimonials">
-        <div class="section-inner">
-            <div class="section-label reveal">// What Our Clients Say</div>
-            <h2 class="section-title reveal">Trusted by businesses that <span style="color: var(--accent)">refuse to lose.</span></h2>
-            <br>
-            <div class="testimonial-grid">
-                <div class="testimonial-card reveal">
-                    <div class="stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
-                    <div class="quote-mark">&ldquo;</div>
-                    <p class="quote-text">We were losing 3-4 calls a day to voicemail. Within the first week of Haxium, we booked 12 new appointments from calls that would've been missed. The ROI was instant.</p>
-                    <div class="testimonial-author">
-                        <div class="testimonial-avatar">JR</div>
-                        <div>
-                            <div class="testimonial-name">Dr. James R.</div>
-                            <div class="testimonial-role">Dental Practice Owner</div>
-                        </div>
-                    </div>
-                </div>
-                <div class="testimonial-card reveal">
-                    <div class="stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
-                    <div class="quote-mark">&ldquo;</div>
-                    <p class="quote-text">I was skeptical about an AI answering our phones, but callers genuinely can't tell it's not human. It handles everything &mdash; bookings, FAQs, even rescheduling. My staff can finally focus.</p>
-                    <div class="testimonial-author">
-                        <div class="testimonial-avatar">SM</div>
-                        <div>
-                            <div class="testimonial-name">Sarah M.</div>
-                            <div class="testimonial-role">Med Spa Director</div>
-                        </div>
-                    </div>
-                </div>
-                <div class="testimonial-card reveal">
-                    <div class="stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
-                    <div class="quote-mark">&ldquo;</div>
-                    <p class="quote-text">The after-hours coverage alone is worth it. We're a law firm &mdash; when someone needs help at midnight, they need help NOW. Haxium captures those leads and I get a text immediately.</p>
-                    <div class="testimonial-author">
-                        <div class="testimonial-avatar">MK</div>
-                        <div>
-                            <div class="testimonial-name">Marcus K.</div>
-                            <div class="testimonial-role">Managing Partner, Law Firm</div>
-                        </div>
-                    </div>
-                </div>
-                <div class="testimonial-card reveal">
-                    <div class="stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
-                    <div class="quote-mark">&ldquo;</div>
-                    <p class="quote-text">We replaced our answering service and saved $2,800/month. The AI is faster, more accurate, and never has a bad day. Best investment we've made this year, hands down.</p>
-                    <div class="testimonial-author">
-                        <div class="testimonial-avatar">LP</div>
-                        <div>
-                            <div class="testimonial-name">Lisa P.</div>
-                            <div class="testimonial-role">HVAC Business Owner</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+        <div class="ctrl">
+          <div class="ctrl-top"><label for="c-value">Average customer value</label><span class="ctrl-val" id="v-value">$250</span></div>
+          <input type="range" id="c-value" min="50" max="5000" value="250" step="25">
+          <div class="ctrl-scale"><span>$50</span><span>$5,000</span></div>
         </div>
-    </section>
-
-    <!-- PRICING -->
-    <section class="pricing" id="pricing">
-        <div class="section-inner">
-            <div style="text-align:center">
-                <div class="section-label reveal">// Pricing</div>
-                <h2 class="section-title reveal">Simple pricing. <span style="color: var(--accent)">Serious results.</span></h2>
-                <p class="section-desc reveal" style="margin: 0 auto 3rem">No hidden fees. No long-term contracts. Cancel anytime.</p>
-            </div>
-            <div class="pricing-cards">
-                <div class="pricing-card reveal">
-                    <h3>Starter</h3>
-                    <p style="color:var(--text-secondary); font-size:0.85rem; margin-bottom:0.5rem">For small businesses getting started</p>
-                    <div class="price">$1,000 <span>/setup</span></div>
-                    <p class="price-sub">+ usage-based monthly</p>
-                    <ul class="pricing-features">
-                        <li>Custom AI voice agent</li>
-                        <li>Appointment booking integration</li>
-                        <li>Lead capture &amp; notifications</li>
-                        <li>Business hours + after-hours</li>
-                        <li>Real-time dashboard</li>
-                        <li>SMS/email notifications</li>
-                    </ul>
-                    <a href="#book" class="btn-secondary" style="width:100%;justify-content:center">Get Started</a>
-                </div>
-                <div class="pricing-card featured reveal">
-                    <h3>Enterprise</h3>
-                    <p style="color:var(--text-secondary); font-size:0.85rem; margin-bottom:0.5rem">For businesses that want it all</p>
-                    <div class="price">Custom</div>
-                    <p class="price-sub">Tailored to your exact needs</p>
-                    <ul class="pricing-features">
-                        <li>Everything in Starter</li>
-                        <li>Multi-location support</li>
-                        <li>CRM &amp; EHR integrations</li>
-                        <li>Custom call flows &amp; logic</li>
-                        <li>Bilingual support</li>
-                        <li>Priority support &amp; SLA</li>
-                        <li>Dedicated account manager</li>
-                    </ul>
-                    <a href="#book" class="btn-primary" style="width:100%;justify-content:center">Talk to Us</a>
-                </div>
-            </div>
+        <div class="ctrl">
+          <div class="ctrl-top"><label for="c-missed">Calls you miss</label><span class="ctrl-val" id="v-missed">62%</span></div>
+          <input type="range" id="c-missed" min="10" max="80" value="62" step="1">
+          <div class="ctrl-scale"><span>10%</span><span>80%</span></div>
         </div>
-    </section>
-
-    <!-- FAQ -->
-    <section class="faq" id="faq">
-        <div class="section-inner">
-            <div style="text-align:center">
-                <div class="section-label reveal">// FAQ</div>
-                <h2 class="section-title reveal">Questions? <span style="color: var(--accent)">We've got answers.</span></h2>
-            </div>
-            <br>
-            <div class="faq-list">
-                <div class="faq-item reveal">
-                    <button class="faq-question">
-                        Will callers know they're talking to an AI?
-                        <span class="icon">+</span>
-                    </button>
-                    <div class="faq-answer">
-                        <p>Our AI uses the most advanced voice synthesis technology available. It sounds natural, handles interruptions, and responds conversationally. Most callers can't tell the difference, and we can disclose if you prefer transparency.</p>
-                    </div>
-                </div>
-                <div class="faq-item reveal">
-                    <button class="faq-question">
-                        What happens if the AI can't handle a call?
-                        <span class="icon">+</span>
-                    </button>
-                    <div class="faq-answer">
-                        <p>The AI will seamlessly transfer the call to you or your designated team member with full context. You get a real-time notification with a summary of the conversation so you can pick up right where it left off.</p>
-                    </div>
-                </div>
-                <div class="faq-item reveal">
-                    <button class="faq-question">
-                        How long does setup take?
-                        <span class="icon">+</span>
-                    </button>
-                    <div class="faq-answer">
-                        <p>Most businesses are live within 3-5 business days. We handle the entire setup &mdash; voice training, script creation, calendar integration, and testing. You just need to answer a few questions about your business.</p>
-                    </div>
-                </div>
-                <div class="faq-item reveal">
-                    <button class="faq-question">
-                        Can it integrate with my existing tools?
-                        <span class="icon">+</span>
-                    </button>
-                    <div class="faq-answer">
-                        <p>Yes. We integrate with most calendar systems (Google Calendar, Calendly, Cal.com), CRMs (HubSpot, Salesforce, etc.), and can send data via webhooks to virtually any system you use.</p>
-                    </div>
-                </div>
-                <div class="faq-item reveal">
-                    <button class="faq-question">
-                        What industries do you work with?
-                        <span class="icon">+</span>
-                    </button>
-                    <div class="faq-answer">
-                        <p>We serve any business that receives inbound calls: dental &amp; medical practices, law firms, real estate agencies, home services, salons, med spas, and more. If your business gets phone calls, we can help.</p>
-                    </div>
-                </div>
-                <div class="faq-item reveal">
-                    <button class="faq-question">
-                        Is there a contract or commitment?
-                        <span class="icon">+</span>
-                    </button>
-                    <div class="faq-answer">
-                        <p>No long-term contracts. We believe in earning your business every month. You can cancel anytime. We're confident you'll stay once you see the results.</p>
-                    </div>
-                </div>
-            </div>
+        <div class="ctrl">
+          <div class="ctrl-top"><label for="c-close">Of missed calls, % that were new customers</label><span class="ctrl-val" id="v-close">20%</span></div>
+          <input type="range" id="c-close" min="5" max="80" value="20" step="1">
+          <div class="ctrl-scale"><span>5%</span><span>80%</span></div>
         </div>
-    </section>
-
-    <!-- FINAL CTA -->
-    <section class="final-cta" id="book">
-        <div class="cta-box reveal">
-            <div class="cta-glow"></div>
-            <div class="section-label">// Ready?</div>
-            <h2>Stop losing calls.<br><span class="gradient-text">Start closing leads.</span></h2>
-            <p>Try it yourself &mdash; call our AI demo right now, or book a free consultation to see what Haxium can do for your business.</p>
-            <div class="hero-ctas">
-                <a href="tel:+16467590757" class="btn-primary">
-                    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
-                    Call (646) 759-0757
-                </a>
-                <a href="#book" class="btn-secondary">
-                    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-                    Book Free Consultation
-                </a>
-            </div>
+      </div>
+      <div class="calc-result reveal">
+        <div class="cr-label">You're leaving about</div>
+        <div class="cr-big" id="r-big">$0</div>
+        <div class="cr-sub">on the table every month from calls you never pick up.</div>
+        <div class="cr-divide"></div>
+        <div class="cr-rows">
+          <div class="cr-row"><span>Missed calls / month</span><b id="r-mcalls">0</b></div>
+          <div class="cr-row"><span>New customers lost / month</span><b id="r-lost">0</b></div>
+          <div class="cr-row"><span>Lost revenue / year</span><b id="r-year">$0</b></div>
+          <div class="cr-row"><span>Recoverable with your AI Voice Agent</span><b class="good" id="r-recover">$0/mo</b></div>
         </div>
-    </section>
+        <a class="btn btn-primary btn-block" href="#book">Book a call to plug the leak</a>
+        <div class="calc-note">Individual results vary.</div>
+      </div>
+    </div>
+  </div>
+</section>
 
-    <!-- FOOTER -->
-    <footer class="footer">
-        <div class="footer-inner">
-            <div class="footer-left">
-                <div class="logo-icon" style="width:28px;height:28px;font-size:14px;border-radius:8px">H</div>
-                <span class="footer-copy">&copy; 2026 Haxium AI. All rights reserved.</span>
-            </div>
-            <ul class="footer-links">
-                <li><a href="#features">Features</a></li>
-                <li><a href="#pricing">Pricing</a></li>
-                <li><a href="#faq">FAQ</a></li>
-                <li><a href="mailto:hello@haxium.ai">Contact</a></li>
-            </ul>
+<!-- ============================ HOW IT WORKS ============================ -->
+<section class="section-pad" id="how">
+  <div class="wrap">
+    <div class="reveal">
+      <span class="eyebrow">Onboarding</span>
+      <h2 class="h2">Answering your phones in <span class="hl">under two weeks.</span></h2>
+      <p class="lede">Hands-off and done for you. You keep running the business; we build, train, and launch your AI receptionist.</p>
+    </div>
+    <div class="steps">
+      <div class="step reveal">
+        <span class="when">Days 1–2</span>
+        <div class="n">01</div>
+        <h3>Discovery call</h3>
+        <p>We learn about your business, services, hours, pricing, booking rules, and the questions your callers actually ask.</p>
+      </div>
+      <div class="step reveal">
+        <span class="when">Days 3–10</span>
+        <div class="n">02</div>
+        <h3>We build &amp; train your AI Receptionist</h3>
+        <p>Your agent gets a natural-sounding voice, a detailed knowledge base of your business, and is linked to your calendar.</p>
+      </div>
+      <div class="step reveal">
+        <span class="when">By day 14</span>
+        <div class="n">03</div>
+        <h3>Go live</h3>
+        <p>Flip the switch. Every call answered from day one, book appointments, answer FAQs, and capture leads.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ CAPABILITIES ============================ -->
+<section class="section-pad alt" id="features">
+  <div class="wrap">
+    <div class="reveal">
+      <span class="eyebrow">Capabilities</span>
+      <h2 class="h2">One agent that runs your <span class="hl">whole front desk.</span></h2>
+      <p class="lede">Not a phone tree. Not a chatbot. An AI voice agent that holds real conversations, answers questions about your business, and gets things done.</p>
+    </div>
+    <div class="feat-grid">
+      <div class="feat reveal">
+        <div class="feat-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>
+        <h3>Natural Sounding-Voice</h3>
+        <p>Natural, real-time conversations that callers actually trust, no robotic scripts, and high accuracy.</p>
+      </div>
+      <div class="feat reveal">
+        <div class="feat-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div>
+        <h3>Books appointments</h3>
+        <p>Syncs to your calendar and schedules appointments straight into open slots.</p>
+      </div>
+      <div class="feat reveal">
+        <div class="feat-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div>
+        <h3>Answers FAQs</h3>
+        <p>Trained on your business info, hours, services, and policies. Answers instantly and accurately, every time.</p>
+      </div>
+      <div class="feat reveal">
+        <div class="feat-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/></svg></div>
+        <h3>Captures every lead</h3>
+        <p>Logs each caller's name, number and reason so nothing slips through the cracks while you're busy.</p>
+      </div>
+      <div class="feat reveal">
+        <div class="feat-ic green"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg></div>
+        <h3>Transfers live calls</h3>
+        <p>Routes urgent or high-value calls to the right person live, and can include full context. No cold handoffs.</p>
+      </div>
+      <div class="feat reveal">
+        <div class="feat-ic green"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
+        <h3>24/7, every day</h3>
+        <p>Nights, weekends, holidays, and lunch rushes, every call answered on the first ring, all year round.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ DEMO ============================ -->
+<section class="section-pad" id="demo">
+  <div class="wrap">
+    <div class="reveal">
+      <span class="eyebrow">Hear it yourself</span>
+      <h2 class="h2">This is what your callers will <span class="hl">hear.</span></h2>
+      <p class="lede">A sample AI Voice Agent call. Press play to listen or call our live AI voice agent's line and try to stump it.</p>
+    </div>
+    <div class="demo-grid">
+      <div class="player reveal">
+        <div class="player-head">
+          <div class="player-av">H</div>
+          <div class="player-meta">
+            <b>Sample call · Salon booking</b>
+            <span>AI Voice Agent</span>
+          </div>
         </div>
-    </footer>
+        <div class="player-wave"></div>
+        <div class="player-ctl">
+          <button class="play-btn" aria-label="Play sample call"></button>
+          <span class="player-time">0:00 / 0:00</span>
+          <div class="player-track"><div class="player-fill"></div></div>
+        </div>
+        <!-- PLACEHOLDER audio — swap src for your real call recording when ready -->
+        <audio id="demoAudio" preload="metadata" src="https://download.samplelib.com/mp3/sample-15s.mp3"></audio>
+      </div>
+      <div class="demo-points">
+        <div class="demo-point reveal">
+          <div class="pi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
+          <div><h4>Picks up in 0.4s</h4><p>No hold music, no "press 1 for…" menus — just a warm hello on the first ring.</p></div>
+        </div>
+        <div class="demo-point reveal">
+          <div class="pi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div>
+          <div><h4>Books the appointment</h4><p>Checks your calendar live and locks in the slot before the caller hangs up.</p></div>
+        </div>
+        <div class="demo-point reveal">
+          <div class="pi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>
+          <div><h4>Texts a confirmation</h4><p>The caller gets an instant SMS, so the booking actually sticks and no-shows drop.</p></div>
+        </div>
+        <a class="btn btn-primary" href="tel:+16467590757" style="margin-top:6px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.8 19.8 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.12 4.18 2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/></svg>Call Our AI Receptionist live</a>
+      </div>
+    </div>
+  </div>
+</section>
 
-    <script>
-        // Navbar scroll effect
-        window.addEventListener('scroll', () => {
-            document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 50);
-        });
+<!-- ============================ OUTCOMES ============================ -->
+<section class="section-pad alt" id="results">
+  <div class="wrap">
+    <div class="reveal">
+      <span class="eyebrow">What changes</span>
+      <h2 class="h2">When the phone <span class="hl">always</span> gets answered.</h2>
+      <p class="lede">What it will look like when your AI Voice Agent is handling the calls you used to miss.</p>
+    </div>
+    <div class="out-grid">
+      <div class="out reveal"><div class="num"><em>99%</em></div><div class="cap">of calls answered no more voicemail black hole.</div></div>
+      <div class="out reveal"><div class="num"><em>0.4s</em></div><div class="cap">average pickup faster than any human front desk.</div></div>
+      <div class="out reveal"><div class="num"><em>24/7</em></div><div class="cap">coverage - days, nights, weekends, holidays and lunch.</div></div>
+      <div class="out reveal"><div class="num"><em>$10k+</em></div><div class="cap">save on missed calls. Bonus: save staff cost of a full-time receptionist hire.</div></div>
+    </div>
+  </div>
+</section>
 
-        // Scroll reveal
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('visible');
-                }
-            });
-        }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+<!-- ============================ FOUNDERS ============================ -->
+<section class="section-pad" id="founder">
+  <div class="wrap">
+    <div class="founder-head reveal">
+      <span class="eyebrow">Why Haxium</span>
+      <blockquote class="founder-quote">"We built Haxium to solve one problem that causes every local business owner to lose customers. Missed Calls! Most of the times they never even knew had called. <span class="hl">Your phone should never cost you a customer again.</span>"</blockquote>
+    </div>
+    <div class="founder-team">
+      <figure class="cofounder reveal">
+        <img class="cofounder-photo" src="assets/khalid-hassan.jpg" alt="Khalid Hassan, Co-founder & CEO of Haxium AI" style="object-position: center 22%;">
+        <figcaption>
+          <div class="sig">Khalid Hassan</div>
+          <div class="role"><b>Co-founder & CEO</b>, Haxium AI</div>
+        </figcaption>
+      </figure>
+      <figure class="cofounder reveal">
+        <img class="cofounder-photo" src="assets/haseeb-munawar.jpeg" alt="Haseeb Munawar, Co-founder & CTO of Haxium AI" style="object-position: center 28%;">
+        <figcaption>
+          <div class="sig">Haseeb Munawar</div>
+          <div class="role"><b>Co-founder & CTO</b>, Haxium AI</div>
+        </figcaption>
+      </figure>
+    </div>
+  </div>
+</section>
 
-        document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+<!-- ============================ FAQ ============================ -->
+<section class="section-pad alt" id="faq">
+  <div class="wrap">
+    <div class="reveal">
+      <span class="eyebrow">Questions</span>
+      <h2 class="h2">Everything you're probably <span class="hl">wondering.</span></h2>
+    </div>
+    <div class="faq-wrap">
+      <div class="faq-item">
+        <button class="faq-q">Does it actually sound human, or like a robot?<span class="ic"></span></button>
+        <div class="faq-a"><p>Our AI Voice Agent runs on the latest conversational voice AI. It handles interruptions, follow-ups and natural pauses — most callers can't tell. Press play on the demo above, or call the live line and judge for yourself.</p></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q">What happens if it can't answer something?<span class="ic"></span></button>
+        <div class="faq-a"><p>You set the rules. For anything outside its knowledge — or any urgent, high-value call — it transfers live to you or your team with full context, or takes a detailed message and texts it to you instantly.</p></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q">How long until I'm live?<span class="ic"></span></button>
+        <div class="faq-a"><p>Under two weeks. After a short discovery call we build and train your agent, connect your calendar and tools, and switch it on — usually by day 14.</p></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q">Will it work with my calendar and software?<span class="ic"></span></button>
+        <div class="faq-a"><p>Yes. Our AI Voice Agent connects to common calendars and CRMs to book, reschedule and log leads in real time. Tell us what you use and we'll wire it up during onboarding.</p></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q">Is it really cheaper than hiring someone?<span class="ic"></span></button>
+        <div class="faq-a"><p>A full-time receptionist runs $35,000+ a year and still can't cover nights or weekends. Your AI Voice Agent answers every call around the clock for a fraction of that. Use the calculator above to see your own numbers.</p></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q">What does it cost?<span class="ic"></span></button>
+        <div class="faq-a"><p>It depends on your call volume and what you need it to do. Book a quick call and we'll give you a straight number — no setup fees, cancel anytime.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
 
-        // FAQ toggle
-        document.querySelectorAll('.faq-question').forEach(btn => {
-            btn.addEventListener('click', () => {
-                const item = btn.parentElement;
-                const wasOpen = item.classList.contains('open');
-                document.querySelectorAll('.faq-item.open').forEach(i => i.classList.remove('open'));
-                if (!wasOpen) item.classList.add('open');
-            });
-        });
+<!-- ============================ FINAL CTA ============================ -->
+<section class="final" id="book">
+  <div class="wrap">
+    <div class="final-box reveal">
+      <h2>Stop losing calls.<br>Start booking them.</h2>
+      <p>Call the demo and hear it live, or book a 15-minute call and we'll map out your AI front desk. Live in under two weeks.</p>
+      <div class="final-ctas">
+        <a class="btn btn-primary" href="tel:+16467590757"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.8 19.8 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.12 4.18 2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/></svg>Call the live demo</a>
+        <a class="btn btn-ghost" href="#book"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>Book a free call</a>
+      </div>
+      <div class="final-micro">No setup fees · Cancel anytime · Live in under 2 weeks</div>
+    </div>
+  </div>
+</section>
 
-        // Smooth scroll for anchors
-        document.querySelectorAll('a[href^="#"]').forEach(link => {
-            link.addEventListener('click', e => {
-                e.preventDefault();
-                const target = document.querySelector(link.getAttribute('href'));
-                if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-            });
-        });
-    </script>
+<!-- ============================ FOOTER ============================ -->
+<footer class="foot">
+  <div class="wrap">
+    <div class="foot-grid">
+      <div class="foot-brand">
+        <a href="#top" class="brand"><span class="mark"><svg viewBox="0 0 24 24" fill="currentColor"><rect x="3" y="9" width="2.4" height="6" rx="1.2"/><rect x="8" y="5" width="2.4" height="14" rx="1.2"/><rect x="13" y="7" width="2.4" height="10" rx="1.2"/><rect x="18" y="10.5" width="2.4" height="3" rx="1.2"/></svg></span><b>Haxium<em>AI</em></b></a>
+        <p>The AI receptionist that answers every call, books every appointment, and never takes a day off.</p>
+        <div class="foot-phone">(646) 759-0757</div>
+      </div>
+      <div class="foot-col">
+        <h5>Product</h5>
+        <a href="#how">How it works</a>
+        <a href="#features">Features</a>
+        <a href="#demo">Hear the demo</a>
+        <a href="#results">Results</a>
+      </div>
+      <div class="foot-col">
+        <h5>Company</h5>
+        <a href="#faq">FAQ</a>
+        <a href="#book">Book a free call</a>
+        <a href="tel:+16467590757">Call the demo</a>
+        <a href="#calculator">Cost calculator</a>
+      </div>
+    </div>
+    <div class="foot-bottom">
+      <small>© 2026 Haxium AI. All rights reserved.</small>
+      <small>No setup fees · Cancel anytime</small>
+    </div>
+  </div>
+</footer>
+
+<script src="frames/image-slot.js"></script>
+<script src="js/haxium.js"></script>
+
 </body>
 </html>
