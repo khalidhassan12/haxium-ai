@@ -54,7 +54,7 @@
       <div class="hero-copy">
         <span class="badge"><span class="dot"></span> AI receptionist · answering live</span>
         <h1>The front desk that <span class="hl">never closes.</span></h1>
-        <p class="lede">Our AI Voice Agent sounds human-like, answers every call, books appointments, answers FAQs, and captures leads literally 24/7.</p>
+        <p class="lede">Our AI Receptionist sounds human-like, answers every call, books appointments, answers FAQs, and captures leads literally 24/7.</p>
         <div class="hero-ctas">
           <a class="btn btn-primary" href="tel:+16467590757"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.8 19.8 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.12 4.18 2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/></svg>Call the live demo</a>
           <a class="btn btn-ghost" href="#book"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>Book a free consultation</a>
@@ -66,15 +66,72 @@
         </div>
       </div>
       <div class="hero-visual">
-        <image-slot class="bot-slot" id="bot-hero" shape="rounded" radius="24" placeholder="AI agent illustration — friendly bot on a call, waving to a customer"></image-slot>
-        <div class="call-card">
+        <div class="call-card call-card--full">
+          <!-- Caller & AI Avatars -->
+          <div class="cc-avatars">
+            <div class="cc-avatar cc-avatar--human">
+              <svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="40" cy="40" r="38" fill="#f3ece4" stroke="var(--border)" stroke-width="1.5"/>
+                <circle cx="40" cy="30" r="12" fill="#c4a882"/>
+                <ellipse cx="40" cy="58" rx="18" ry="13" fill="#c4a882"/>
+                <!-- Phone in hand -->
+                <rect x="55" y="24" width="9" height="16" rx="2" fill="#8a7560" stroke="#6b5a48" stroke-width="1"/>
+                <rect x="56.5" y="26" width="6" height="10" rx="1" fill="#bfe0f5"/>
+                <line x1="58" y1="38" x2="54" y2="34" stroke="#8a7560" stroke-width="2" stroke-linecap="round"/>
+              </svg>
+              <span class="cc-avatar-label">Caller</span>
+            </div>
+            <div class="cc-connect">
+              <div class="cc-connect-line">
+                <svg viewBox="0 0 120 30" fill="none" preserveAspectRatio="none">
+                  <path d="M0 15 Q30 0 60 15 Q90 30 120 15" stroke="var(--accent)" stroke-width="2.5" stroke-dasharray="6 4" fill="none">
+                    <animate attributeName="stroke-dashoffset" from="20" to="0" dur="1.5s" repeatCount="indefinite"/>
+                  </path>
+                </svg>
+              </div>
+              <span class="cc-connect-badge"><i class="cc-pulse"></i> Live</span>
+            </div>
+            <div class="cc-avatar cc-avatar--ai">
+              <svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="40" cy="40" r="38" fill="#fef3e7" stroke="var(--accent)" stroke-width="1.5"/>
+                <!-- Robot head -->
+                <rect x="24" y="24" width="32" height="28" rx="8" fill="var(--accent)"/>
+                <!-- Eyes -->
+                <circle cx="34" cy="36" r="4" fill="white"/>
+                <circle cx="46" cy="36" r="4" fill="white"/>
+                <circle cx="34" cy="36" r="2" fill="#2d2d2d"/>
+                <circle cx="46" cy="36" r="2" fill="#2d2d2d"/>
+                <!-- Mouth -->
+                <rect x="32" y="44" width="16" height="3" rx="1.5" fill="white"/>
+                <!-- Antenna -->
+                <line x1="40" y1="24" x2="40" y2="17" stroke="var(--accent)" stroke-width="2.5" stroke-linecap="round"/>
+                <circle cx="40" cy="15" r="3" fill="var(--accent)">
+                  <animate attributeName="opacity" values="1;0.4;1" dur="2s" repeatCount="indefinite"/>
+                </circle>
+                <!-- Headset band -->
+                <path d="M18 36 Q18 18 40 18 Q62 18 62 36" stroke="#555" stroke-width="3" fill="none" stroke-linecap="round"/>
+                <!-- Headset earpieces -->
+                <rect x="14" y="32" width="8" height="12" rx="4" fill="#555"/>
+                <rect x="58" y="32" width="8" height="12" rx="4" fill="#555"/>
+                <!-- Mic arm -->
+                <path d="M14 40 Q8 40 8 48 L14 50" stroke="#555" stroke-width="2" fill="none" stroke-linecap="round"/>
+                <circle cx="14" cy="51" r="3" fill="#777"/>
+              </svg>
+              <span class="cc-avatar-label">AI Receptionist</span>
+            </div>
+          </div>
+
           <div class="cc-head">
             <span class="cc-live"><i></i> Live call</span>
-            <span class="cc-timer">00:14</span>
+            <span class="cc-timer">00:42</span>
           </div>
           <div class="wave"></div>
-          <div class="cc-line"><span class="who c">Caller</span>Are you open Saturday?</div>
-          <div class="cc-line"><span class="who a">Agent</span>Yes — 9 to 4. Book you in?</div>
+          <div class="cc-line"><span class="who c">Caller</span>Hi, are you open Saturday?</div>
+          <div class="cc-line"><span class="who a">AI Receptionist</span>Yes — we're open 9 to 4. Would you like to book an appointment?</div>
+          <div class="cc-line"><span class="who c">Caller</span>Yeah, can I get a 2 PM slot?</div>
+          <div class="cc-line"><span class="who a">AI Receptionist</span>Absolutely! I've booked you in for Saturday at 2 PM. You'll receive a calendar confirmation shortly.</div>
+          <div class="cc-line"><span class="who c">Caller</span>Perfect, thanks!</div>
+          <div class="cc-line"><span class="who a">AI Receptionist</span>You're welcome! See you Saturday. Have a great day! 😊</div>
           <div class="cc-metrics">
             <div><b>0.4s</b><span>Pickup</span></div>
             <div><b>100%</b><span>Answered</span></div>
