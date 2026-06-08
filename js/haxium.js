@@ -18,7 +18,6 @@
     el.innerHTML = html;
   }
   document.querySelectorAll(".wave").forEach(function (w) { buildWave(w, 32, 1.0); });
-  document.querySelectorAll(".player-wave").forEach(function (w) { buildWave(w, 56, 0.9); });
 
   /* ---------- nav scroll state ---------- */
   var nav = document.querySelector(".nav");
@@ -136,35 +135,4 @@
     recompute();
   }
 
-  /* ---------- demo audio player ---------- */
-  var player = document.querySelector(".player");
-  if (player) {
-    var audio = document.getElementById("demoAudio");
-    var playBtn = player.querySelector(".play-btn");
-    var fill = player.querySelector(".player-fill");
-    var timeEl = player.querySelector(".player-time");
-    var iconPlay = '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>';
-    var iconPause = '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 5h4v14H6zM14 5h4v14h-4z"/></svg>';
-    function fmt(t) {
-      if (isNaN(t)) t = 0;
-      var m = Math.floor(t / 60), s = Math.floor(t % 60);
-      return m + ":" + (s < 10 ? "0" : "") + s;
-    }
-    if (audio && playBtn) {
-      playBtn.innerHTML = iconPlay;
-      playBtn.addEventListener("click", function () {
-        if (audio.paused) { audio.play(); } else { audio.pause(); }
-      });
-      audio.addEventListener("play", function () { player.classList.add("playing"); playBtn.innerHTML = iconPause; });
-      audio.addEventListener("pause", function () { player.classList.remove("playing"); playBtn.innerHTML = iconPlay; });
-      audio.addEventListener("ended", function () { player.classList.remove("playing"); playBtn.innerHTML = iconPlay; if (fill) fill.style.width = "0%"; });
-      audio.addEventListener("timeupdate", function () {
-        if (fill && audio.duration) fill.style.width = (audio.currentTime / audio.duration * 100) + "%";
-        if (timeEl) timeEl.textContent = fmt(audio.currentTime) + " / " + fmt(audio.duration);
-      });
-      audio.addEventListener("loadedmetadata", function () {
-        if (timeEl) timeEl.textContent = "0:00 / " + fmt(audio.duration);
-      });
-    }
-  }
 })();
