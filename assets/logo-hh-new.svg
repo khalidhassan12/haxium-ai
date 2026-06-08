@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">
+  <!-- HH Logo: tall center line, two half-height side lines, horizontal crossbar -->
+  <g fill="none" stroke="#1a1a1a" stroke-linecap="round" stroke-linejoin="round">
+    <!-- Left vertical line (half height, centered) -->
+    <path d="M48 60 C46 62, 43 75, 42 90 C41 105, 41 120, 44 135 C45 138, 47 140, 49 140" stroke-width="7"/>
+    <!-- Center vertical line (full height) -->
+    <path d="M100 20 C98 22, 95 45, 94 70 C93 100, 93 130, 96 160 C97 165, 99 168, 101 168" stroke-width="8"/>
+    <!-- Right vertical line (half height, centered) -->
+    <path d="M152 60 C150 62, 147 75, 146 90 C145 105, 145 120, 148 135 C149 138, 151 140, 153 140" stroke-width="7"/>
+    <!-- Horizontal crossbar: middle of left → center of middle → middle of right -->
+    <line x1="42" y1="100" x2="152" y2="100" stroke-width="3.5"/>
+  </g>
+</svg>
