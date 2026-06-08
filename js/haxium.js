@@ -102,7 +102,6 @@
       big: document.getElementById("r-big"),
       mCalls: document.getElementById("r-mcalls"),
       mLost: document.getElementById("r-lost"),
-      mRecover: document.getElementById("r-recover"),
       mYear: document.getElementById("r-year")
     };
     var money = function (n) {
@@ -121,8 +120,6 @@
       // of the calls you miss, closeRate = share that would have become paying customers
       var lostCustomers = missedMonth * closeRate;
       var lostRevMonth = lostCustomers * avgVal;
-      var recovered = lostRevMonth * 0.9;             // Haxium answers ~all of them
-
       out.callsV.textContent = callsDay + "/day";
       out.valueV.textContent = money(avgVal);
       out.missedV.textContent = els.missed.value + "%";
@@ -131,7 +128,6 @@
       out.big.textContent = money(lostRevMonth);
       out.mCalls.textContent = Math.round(missedMonth).toLocaleString("en-US");
       out.mLost.textContent = Math.round(lostCustomers).toLocaleString("en-US");
-      out.mRecover.textContent = money(recovered) + "/mo";
       out.mYear.textContent = money(lostRevMonth * 12);
     }
     Object.keys(els).forEach(function (k) {

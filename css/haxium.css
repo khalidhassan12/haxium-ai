@@ -76,9 +76,11 @@ body::before{
   letter-spacing: 0.10em; text-transform: uppercase; color: var(--accent);
   margin-bottom: 18px;
 }
-.eyebrow::before { display: none; }
+.eyebrow::before {
+  content: ""; width: 22px; height: 1px; background: var(--accent); opacity: .6;
+}
 .h2 { font-size: clamp(30px, 4.4vw, 50px); text-wrap: balance; }
-.lede { font-size: clamp(16px, 1.5vw, 19px); color: var(--muted); max-width: 56ch; margin-top: 18px; line-height: 1.65; }
+.lede { font-size: clamp(16px, 1.5vw, 19px); color: var(--muted); max-width: 80ch; margin-top: 18px; line-height: 1.65; }
 .hl { color: var(--accent); }
 .hl-g { color: var(--green); }
 
@@ -238,7 +240,7 @@ body::before{
 }
 
 /* ============================ PROBLEM ============================ */
-.prob-head { max-width: 760px; }
+.prob-head { max-width: 100%; }
 .stat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-top: 52px; }
 .stat {
   background: var(--ink); border: 1px solid var(--border); border-radius: var(--r);
@@ -248,7 +250,7 @@ body::before{
 .stat .num { font-family: var(--font-display); font-weight: 800; font-size: clamp(44px, 5vw, 60px); color: var(--accent); line-height: 1; letter-spacing: -0.04em; }
 .stat .desc { margin-top: 12px; font-size: 15px; color: var(--fg-soft); line-height: 1.5; }
 .stat .src { margin-top: 14px; font-family: var(--font-mono); font-size: 11px; color: var(--faint); }
-.prob-foot { margin-top: 34px; font-size: 16px; color: var(--muted); max-width: 64ch; }
+.prob-foot { margin-top: 34px; font-size: 16px; color: var(--muted); max-width: 80ch; }
 .prob-foot b { color: var(--fg); font-weight: 700; }
 
 /* ============================ CALCULATOR ============================ */
@@ -277,7 +279,7 @@ input[type=range]::-moz-range-thumb { width: 22px; height: 22px; border: 3px sol
 .cr-rows { display: grid; gap: 14px; position: relative; }
 .cr-row { display: flex; justify-content: space-between; align-items: center; font-size: 14.5px; }
 .cr-row span { color: rgba(245,241,234,0.7); }
-.cr-row b { font-family: var(--font-mono); font-weight: 700; font-size: 16px; }
+.cr-row b { font-family: var(--font-mono); font-weight: 700; font-size: 20px; }
 .cr-row b.good { color: oklch(0.78 0.14 150); }
 .calc-result .btn { margin-top: 28px; position: relative; }
 .calc-note { margin-top: 18px; font-family: var(--font-mono); font-size: 11.5px; color: var(--faint); text-align: center; }
