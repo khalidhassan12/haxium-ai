@@ -238,6 +238,7 @@ body::before{
   0% { transform: translateX(0); }
   100% { transform: translateX(-50%); }
 }
+.marquee-track--lang { animation-direction: reverse; }
 
 /* ============================ PROBLEM ============================ */
 .prob-head { max-width: 100%; }
